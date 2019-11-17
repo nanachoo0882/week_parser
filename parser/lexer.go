@@ -16,21 +16,22 @@ func (s *Scanner) Init(src string) {
 }
 
 func (s *Scanner) Scan() (token int, literal rune) {
-    switch ch := s.peek(); {
-    case isWeekElement(ch):
-        token = WEEKELEMENT
-        literal = s.peek()
-    default:
-        switch ch {
-        case -1:
-            token = EOF
-        case '~', '･':
-            token = int(ch)
-            literal = ch
-        }
-    }
-    s.next()
-    return
+	switch ch := s.peek(); {
+	case isWeekElement(ch):
+		token = WEEKELEMENT
+		literal = s.peek()
+		s.skipWeekChars()
+	default:
+		switch ch {
+		case -1:
+			token = EOF
+		case '~', '･':
+			token = int(ch)
+			literal = ch
+		}
+		s.next()
+	}
+	return
 }
 
 func (s *Scanner) peek() rune {
@@ -62,4 +63,14 @@ func stringInSlice(a rune, list []rune) bool {
         }
     }
     return false
+}
+
+func (s *Scanner) skipWeekChars() {
+	s.next()
+	if s.peek() == '曜' {
+		s.next()
+		if s.peek() == '日' {
+			s.next()
+		}
+	}
 }
