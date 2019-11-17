@@ -4,6 +4,8 @@ const (
     EOF = -1
 )
 
+var elements = []rune{'月', '火', '水', '木', '金', '土', '日'}
+
 type Scanner struct {
     src    []rune
     offset int
@@ -14,12 +16,18 @@ func (s *Scanner) Init(src string) {
 }
 
 func (s *Scanner) Scan() (token int, literal rune) {
-    ch := s.peek()
-    if ch == -1 {
-        token = EOF
-    } else {
-        token = ELEMENT
-        literal = ch
+    switch ch := s.peek(); {
+    case isWeekElement(ch):
+        token = WEEKELEMENT
+        literal = s.peek()
+    default:
+        switch ch {
+        case -1:
+            token = EOF
+        case '~', '･':
+            token = int(ch)
+            literal = ch
+        }
     }
     s.next()
     return
@@ -41,4 +49,17 @@ func (s *Scanner) next() {
 
 func (s *Scanner) reachEOF() bool {
     return len(s.src) <= s.offset
+}
+
+func isWeekElement(ch rune) bool {
+    return stringInSlice(ch, elements)
+}
+
+func stringInSlice(a rune, list []rune) bool {
+    for _, b := range list {
+        if b == a {
+            return true
+        }
+    }
+    return false
 }

@@ -1,34 +1,73 @@
 
 state 0
-	$accept: .expr $end 
+	$accept: .program $end 
 
-	ELEMENT  shift 2
+	WEEKELEMENT  shift 3
 	.  error
 
-	expr  goto 1
+	program  goto 1
+	expr  goto 2
 
 state 1
-	$accept:  expr.$end 
+	$accept:  program.$end 
 
 	$end  accept
 	.  error
 
 
 state 2
-	expr:  ELEMENT.    (1)
+	program:  expr.    (1)
+	expr:  expr.'･' expr 
 
-	.  reduce 1 (src line 22)
+	'･'  shift 4
+	.  reduce 1 (src line 31)
 
 
-4 terminals, 2 nonterminals
-2 grammar rules, 3/8000 states
+state 3
+	expr:  WEEKELEMENT.    (2)
+	expr:  WEEKELEMENT.'~' WEEKELEMENT 
+
+	'~'  shift 5
+	.  reduce 2 (src line 37)
+
+
+state 4
+	expr:  expr '･'.expr 
+
+	WEEKELEMENT  shift 3
+	.  error
+
+	expr  goto 6
+
+state 5
+	expr:  WEEKELEMENT '~'.WEEKELEMENT 
+
+	WEEKELEMENT  shift 7
+	.  error
+
+
+state 6
+	expr:  expr.'･' expr 
+	expr:  expr '･' expr.    (3)
+
+	.  reduce 3 (src line 42)
+
+
+state 7
+	expr:  WEEKELEMENT '~' WEEKELEMENT.    (4)
+
+	.  reduce 4 (src line 46)
+
+
+6 terminals, 3 nonterminals
+5 grammar rules, 8/8000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
-51 working sets used
-memory: parser 0/120000
+52 working sets used
+memory: parser 2/120000
 0 extra closures
-1 shift entries, 1 exceptions
-1 goto entries
+5 shift entries, 1 exceptions
+3 goto entries
 0 entries saved by goto default
-Optimizer space used: output 2/120000
-2 table entries, 0 zero
-maximum spread: 4, maximum offset: 4
+Optimizer space used: output 8/120000
+8 table entries, 1 zero
+maximum spread: 6, maximum offset: 6

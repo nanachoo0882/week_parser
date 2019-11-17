@@ -13,24 +13,31 @@ type Token struct {
 	token   int
 	literal rune
 }
-type Expr struct {
+type WeekExpr struct {
 	literal rune
 }
+type BinOpExpr struct {
+	left     Expression
+	operator rune
+	right    Expression
+}
 
-//line parser/parser.go.y:14
+//line parser/parser.go.y:19
 type yySymType struct {
 	yys   int
 	token Token
 	expr  Expression
 }
 
-const ELEMENT = 57346
+const WEEKELEMENT = 57346
 
 var yyToknames = [...]string{
 	"$end",
 	"error",
 	"$unk",
-	"ELEMENT",
+	"WEEKELEMENT",
+	"'･'",
+	"'~'",
 }
 var yyStatenames = [...]string{}
 
@@ -38,7 +45,7 @@ const yyEofCode = 1
 const yyErrCode = 2
 const yyInitialStackSize = 16
 
-//line parser/parser.go.y:28
+//line parser/parser.go.y:51
 
 // ユーザ定義部
 type Lexer struct {
@@ -76,46 +83,58 @@ var yyExca = [...]int{
 
 const yyPrivate = 57344
 
-const yyLast = 2
+const yyLast = 8
 
 var yyAct = [...]int{
 
-	2, 1,
+	5, 4, 2, 7, 3, 1, 0, 6,
 }
 var yyPact = [...]int{
 
-	-4, -1000, -1000,
+	0, -1000, -4, -6, 0, -1, -1000, -1000,
 }
 var yyPgo = [...]int{
 
-	0, 1,
+	0, 5, 2,
 }
 var yyR1 = [...]int{
 
-	0, 1,
+	0, 1, 2, 2, 2,
 }
 var yyR2 = [...]int{
 
-	0, 1,
+	0, 1, 1, 3, 3,
 }
 var yyChk = [...]int{
 
-	-1000, -1, 4,
+	-1000, -1, -2, 4, 5, 6, -2, 4,
 }
 var yyDef = [...]int{
 
-	0, -2, 1,
+	0, -2, 1, 2, 0, 0, 3, 4,
 }
 var yyTok1 = [...]int{
 
-	1,
+	1, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 6,
 }
 var yyTok2 = [...]int{
 
 	2, 3, 4,
 }
 var yyTok3 = [...]int{
-	0,
+	65381, 5, 0,
 }
 
 var yyErrorMessages = [...]struct {
@@ -457,10 +476,28 @@ yydefault:
 
 	case 1:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line parser/parser.go.y:24
+//line parser/parser.go.y:33
 		{
-			yyVAL.expr = Expr{literal: yyDollar[1].token.literal}
+			yyVAL.expr = yyDollar[1].expr
 			yylex.(*Lexer).result = yyVAL.expr
+		}
+	case 2:
+		yyDollar = yyS[yypt-1 : yypt+1]
+//line parser/parser.go.y:39
+		{
+			yyVAL.expr = WeekExpr{literal: yyDollar[1].token.literal}
+		}
+	case 3:
+		yyDollar = yyS[yypt-3 : yypt+1]
+//line parser/parser.go.y:43
+		{
+			yyVAL.expr = BinOpExpr{left: yyDollar[1].expr, operator: '･', right: yyDollar[3].expr}
+		}
+	case 4:
+		yyDollar = yyS[yypt-3 : yypt+1]
+//line parser/parser.go.y:47
+		{
+			yyVAL.expr = BinOpExpr{left: WeekExpr{literal: yyDollar[1].token.literal}, operator: '~', right: WeekExpr{literal: yyDollar[3].token.literal}}
 		}
 	}
 	goto yystack /* stack new state and value */

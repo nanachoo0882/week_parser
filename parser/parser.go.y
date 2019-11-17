@@ -7,24 +7,47 @@ type Token struct {
     token   int
     literal rune
 }
-type Expr struct {
-  literal rune
+type WeekExpr struct {
+    literal rune
+}
+type BinOpExpr struct {
+    left     Expression
+    operator rune
+    right    Expression
 }
 %}
 %union{
     token Token
     expr  Expression
 }
+%type<expr> program
 %type<expr> expr
-%token<token> ELEMENT
+%token<token> WEEKELEMENT
+
+%left '･'
+%left '~'
 %%
 // 規則部
-expr
-    : ELEMENT
+program
+    : expr
     {
-        $$ = Expr{literal: $1.literal}
+        $$ = $1
         yylex.(*Lexer).result = $$
     }
+expr
+    : WEEKELEMENT
+    {
+        $$ = WeekExpr{literal: $1.literal}
+    }
+    | expr '･' expr
+    {
+        $$ = BinOpExpr{left: $1, operator: '･', right: $3}
+    }
+    | WEEKELEMENT '~' WEEKELEMENT
+    {
+        $$ = BinOpExpr{left: WeekExpr{literal: $1.literal}, operator: '~', right: WeekExpr{literal: $3.literal}}
+    }
+
 %%
 // ユーザ定義部
 type Lexer struct {
