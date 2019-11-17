@@ -23,6 +23,8 @@ func Eval(e Expression) map[rune]bool {
 		'金': false,
 		'土': false,
 		'日': false,
+		'祝': false,
+		'前': false,
 	}
 	return calc(e, weekExists)
 }

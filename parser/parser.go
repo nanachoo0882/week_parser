@@ -30,12 +30,16 @@ type yySymType struct {
 }
 
 const WEEKELEMENT = 57346
+const HOLIDAY = 57347
+const PREHOLIDAY = 57348
 
 var yyToknames = [...]string{
 	"$end",
 	"error",
 	"$unk",
 	"WEEKELEMENT",
+	"HOLIDAY",
+	"PREHOLIDAY",
 	"'･'",
 	"'~'",
 }
@@ -45,7 +49,7 @@ const yyEofCode = 1
 const yyErrCode = 2
 const yyInitialStackSize = 16
 
-//line parser/parser.go.y:51
+//line parser/parser.go.y:60
 
 // ユーザ定義部
 type Lexer struct {
@@ -83,35 +87,36 @@ var yyExca = [...]int{
 
 const yyPrivate = 57344
 
-const yyLast = 8
+const yyLast = 13
 
 var yyAct = [...]int{
 
-	5, 4, 2, 7, 3, 1, 0, 6,
+	3, 4, 5, 7, 6, 2, 9, 1, 0, 0,
+	0, 0, 8,
 }
 var yyPact = [...]int{
 
-	0, -1000, -4, -6, 0, -1, -1000, -1000,
+	-4, -1000, -3, -5, -1000, -1000, -4, 2, -1000, -1000,
 }
 var yyPgo = [...]int{
 
-	0, 5, 2,
+	0, 7, 5,
 }
 var yyR1 = [...]int{
 
-	0, 1, 2, 2, 2,
+	0, 1, 2, 2, 2, 2, 2,
 }
 var yyR2 = [...]int{
 
-	0, 1, 1, 3, 3,
+	0, 1, 1, 1, 1, 3, 3,
 }
 var yyChk = [...]int{
 
-	-1000, -1, -2, 4, 5, 6, -2, 4,
+	-1000, -1, -2, 4, 5, 6, 7, 8, -2, 4,
 }
 var yyDef = [...]int{
 
-	0, -2, 1, 2, 0, 0, 3, 4,
+	0, -2, 1, 2, 3, 4, 0, 0, 5, 6,
 }
 var yyTok1 = [...]int{
 
@@ -127,14 +132,14 @@ var yyTok1 = [...]int{
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 3, 3, 3, 6,
+	3, 3, 3, 3, 3, 3, 8,
 }
 var yyTok2 = [...]int{
 
-	2, 3, 4,
+	2, 3, 4, 5, 6,
 }
 var yyTok3 = [...]int{
-	65381, 5, 0,
+	65381, 7, 0,
 }
 
 var yyErrorMessages = [...]struct {
@@ -483,19 +488,31 @@ yydefault:
 		}
 	case 2:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line parser/parser.go.y:39
+//line parser/parser.go.y:40
 		{
 			yyVAL.expr = WeekExpr{literal: yyDollar[1].token.literal}
 		}
 	case 3:
+		yyDollar = yyS[yypt-1 : yypt+1]
+//line parser/parser.go.y:44
+		{
+			yyVAL.expr = WeekExpr{literal: yyDollar[1].token.literal}
+		}
+	case 4:
+		yyDollar = yyS[yypt-1 : yypt+1]
+//line parser/parser.go.y:48
+		{
+			yyVAL.expr = WeekExpr{literal: yyDollar[1].token.literal}
+		}
+	case 5:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line parser/parser.go.y:43
+//line parser/parser.go.y:52
 		{
 			yyVAL.expr = BinOpExpr{left: yyDollar[1].expr, operator: '･', right: yyDollar[3].expr}
 		}
-	case 4:
+	case 6:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line parser/parser.go.y:47
+//line parser/parser.go.y:56
 		{
 			yyVAL.expr = BinOpExpr{left: WeekExpr{literal: yyDollar[1].token.literal}, operator: '~', right: WeekExpr{literal: yyDollar[3].token.literal}}
 		}

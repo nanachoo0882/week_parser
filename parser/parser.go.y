@@ -22,7 +22,7 @@ type BinOpExpr struct {
 }
 %type<expr> program
 %type<expr> expr
-%token<token> WEEKELEMENT
+%token<token> WEEKELEMENT HOLIDAY PREHOLIDAY
 
 %left '･'
 %left '~'
@@ -34,8 +34,17 @@ program
         $$ = $1
         yylex.(*Lexer).result = $$
     }
+
 expr
     : WEEKELEMENT
+    {
+        $$ = WeekExpr{literal: $1.literal}
+    }
+    | HOLIDAY
+    {
+        $$ = WeekExpr{literal: $1.literal}
+    }
+    | PREHOLIDAY
     {
         $$ = WeekExpr{literal: $1.literal}
     }

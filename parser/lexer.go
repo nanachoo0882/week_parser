@@ -5,6 +5,7 @@ const (
 )
 
 var elements = []rune{'月', '火', '水', '木', '金', '土', '日'}
+var holiday = '祝'
 
 type Scanner struct {
     src    []rune
@@ -21,6 +22,8 @@ func (s *Scanner) Scan() (token int, literal rune) {
 		token = WEEKELEMENT
 		literal = s.peek()
 		s.skipWeekChars()
+	case ch == holiday:
+		token, literal = s.checkHoliday(ch)
 	default:
 		switch ch {
 		case -1:
@@ -73,4 +76,22 @@ func (s *Scanner) skipWeekChars() {
 			s.next()
 		}
 	}
+}
+
+func (s *Scanner) checkHoliday(ch rune) (int, rune) {
+	s.next()
+	if s.peek() == '前' {
+		s.next()
+		if s.peek() == '日' {
+			s.next()
+		}
+		return PREHOLIDAY, '前'
+	} else if s.peek() == '日' {
+		s.next()
+		if s.peek() == '前' {
+			s.next()
+			return PREHOLIDAY, '前'
+		}
+	}
+	return HOLIDAY, '祝'
 }
